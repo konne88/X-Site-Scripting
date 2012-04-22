@@ -47,11 +47,9 @@ int main() {
 	cout << "padding:    " << padding << endl;
 	cout << "padded size:" << psize << endl;
 
-	const int colors = 0;
 	const int offset = sizeof(struct bmpfile_info_header)+
 			   sizeof(struct bmpfile_header)+
-			   sizeof(struct bmpfile_magic)+
-			   colors;
+			   sizeof(struct bmpfile_magic);
 	
 	magic.magic[0] = 0x42;
 	magic.magic[1] = 0x4D;
@@ -70,20 +68,14 @@ int main() {
 	info.bmp_bytesz = psize;
 	info.hres = 1;
 	info.vres = 1;
-	info.ncolors = colors;
+	info.ncolors = 0;
 	info.nimpcolors = 0;
-
-//	uint32_t color[1<<8];
-//	for(int i=0 ; i<colors ; ++i) {
-//		color[i] = i<<8;
-////	}
 
 	ofstream f("output.bmp");
 
 	f.write((char*)&magic,sizeof(struct bmpfile_magic));
         f.write((char*)&header,sizeof(struct bmpfile_header));
         f.write((char*)&info,sizeof(struct bmpfile_info_header));
-//	f.write((char*)&color,colors*4);
 
 	f.write(data,size);
 	
