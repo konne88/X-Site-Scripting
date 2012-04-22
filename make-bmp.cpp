@@ -39,11 +39,12 @@ int main() {
 	const char* data = "Hello, World!";
 	int size = strlen(data);
 	int width = (size+2)/3;
-//	size = width*3;
-	int padding = ((((4-size)%4)+4)%4);
-	int psize = size+padding;
+	int padding = ((((4-(width*3))%4)+4)%4);
+	int psize = width*3+padding;
 
 	cout << "data size:  " << size << endl;
+	cout << "width:      " << width << endl;
+	cout << "image size: " << width*3 << endl;
 	cout << "padding:    " << padding << endl;
 	cout << "padded size:" << psize << endl;
 
@@ -60,7 +61,7 @@ int main() {
 	header.bmp_offset = offset;
 
 	info.header_sz = sizeof(struct bmpfile_info_header);
-	info.width = size/3; // width;
+	info.width = width;
 	info.height = 1;
 	info.nplanes = 1;
 	info.bitspp = 24;
@@ -78,7 +79,11 @@ int main() {
         f.write((char*)&info,sizeof(struct bmpfile_info_header));
 
 	f.write(data,size);
-	
+
+	for(int i=size ; i<psize ; ++i) {
+		f.put(0);
+	}
+
 	f.close();
 
 	return 0;
